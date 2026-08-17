@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jwt import jwt
 from sqlalchemy.orm import Session
-from jose import JWTError
+from jose import jwt, JWTError
 from source.database import User, get_db
 from source.schemas import ProfileResponse
 from source.security import secret_key, algorithm
