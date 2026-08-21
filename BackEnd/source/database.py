@@ -4,10 +4,9 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 
+from source.config import settings
 
-database_url = "sqlite:///./database.db"
-
-engine = create_engine(database_url, connect_args={"check_same_thread": False})
+engine = create_engine(settings.database_url, connect_args={"check_same_thread": False})
 
 session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

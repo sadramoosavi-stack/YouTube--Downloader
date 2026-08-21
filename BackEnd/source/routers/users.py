@@ -4,8 +4,7 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from source.database import User, get_db
 from source.schemas import ProfileResponse
-from source.security import secret_key, algorithm
-
+from source.config import settings
 
 router = APIRouter(tags=["Users"])
 
@@ -16,7 +15,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(auth_sc
     token = credentials.credentials
 
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
 
         user_id = payload.get("sub")
 
