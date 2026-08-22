@@ -14,10 +14,10 @@ base.metadata.create_all(bind=engine)
 
 
 
-app = FastAPI(title="YouTube Downloader API", version="0.1.0")
+app = FastAPI(title=" ZORO Downloader API ", version="0.1.0", description= "God Bless ZORO And Don't Bless Zodiac")
 
 
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"],
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:8000"],
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 

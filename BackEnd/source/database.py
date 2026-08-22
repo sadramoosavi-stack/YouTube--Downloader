@@ -1,7 +1,5 @@
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy import Column, create_engine, Integer, String, func, DateTime, ForeignKey
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship, Mapped, mapped_column
 from datetime import datetime
 
 from source.config import settings
@@ -20,7 +18,7 @@ class User(base):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at : Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     downloads = relationship("Download", back_populates="user", cascade="all, delete")
 
@@ -41,7 +39,7 @@ class Download(base):
 
     file_name = Column(String(300), nullable=True)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at : Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     user = relationship("User", back_populates="downloads")
 
