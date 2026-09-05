@@ -10,8 +10,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
+=======
+    "@radix-ui/react-label": "^2.1.15",
+    "@tabler/icons-react": "^3.46.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tsparticles/engine": "^4.3.2",
+    "@tsparticles/react": "^4.3.2",
+    "@tsparticles/slim": "^4.3.2",
+    "axios": "^1.20.0",
+    "clsx": "^2.1.1",
+    "motion": "^13.1.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3"
+>>>>>>> a967d70 (234)
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
