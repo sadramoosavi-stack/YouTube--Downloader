@@ -14,7 +14,7 @@ export default function Home() {
     <div className="home-page">
       <nav className="navbar">
         <div className="navbar-logo">
-          <span>YT</span> Downloader
+          <span>ZORO</span> Downloader
         </div>
 
         <div className="navbar-links">
