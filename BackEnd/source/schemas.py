@@ -40,3 +40,17 @@ class DownloadRequest(BaseModel):
 class DownloadResponse(BaseModel):
     download_id: int
     status: str
+
+
+class DownloadHistoryResponse(BaseModel):
+    id: int
+    youtube_url: str
+    video_title: Optional[str] = None
+    file_type: str
+    quality: Optional[str] = None
+    download_status: str
+    file_name: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
