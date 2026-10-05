@@ -256,6 +256,21 @@
     color: #92400e;
 }
 
+.status-downloading{
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-completed{
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-failed{
+    background: #fee2e2;
+    color: #991b1b;
+}
+
 .downloads-error{
     color: #ef4444
 }

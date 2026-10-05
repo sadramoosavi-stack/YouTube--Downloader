@@ -3,11 +3,14 @@ import {
   IconDotsVertical,
   IconExternalLink,
   IconTrash,
+  IconDownload,
 } from "@tabler/icons-react";
 import { getThumbnailUrl, formatDate } from "../utils/youtube";
+import { downloadFile } from "../services/downloadService";
 
 function DownloadItem({ download, onDelete }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [fileLoading, setFileLoading] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -25,6 +28,19 @@ function DownloadItem({ download, onDelete }) {
 
   const title = download.video_title || download.youtube_url;
   const formatLabel = download.file_type === "audio" ? "Audio" : "Video";
+  const isCompleted = download.download_status === "completed";
+
+  const handleFileDownload = async () => {
+    setFileLoading(true);
+    try {
+      await downloadFile(download.id, download.file_name);
+    } catch (err) {
+      alert("Could not download the file.");
+    } finally {
+      setFileLoading(false);
+      setMenuOpen(false);
+    }
+  };
 
   return (
     <article className="download-item">
@@ -58,6 +74,17 @@ function DownloadItem({ download, onDelete }) {
 
         {menuOpen && (
           <div className="download-menu">
+            {isCompleted && (
+              <button
+                type="button"
+                onClick={handleFileDownload}
+                disabled={fileLoading}
+              >
+                <IconDownload size={17} />
+                {fileLoading ? "Downloading..." : "Download file"}
+              </button>
+            )}
+
             <a
               href={download.youtube_url}
               target="_blank"

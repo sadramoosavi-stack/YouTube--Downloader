@@ -9,11 +9,13 @@ import {
   IconSettings,
   IconLogout,
 } from "@tabler/icons-react";
+import { useAuth } from "../context/AuthContext";
 
 import "./Sidebar.css";
 
 function Sidebar() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
@@ -100,7 +102,10 @@ function Sidebar() {
         <button
           className="sidebar-link logout-link"
           title="Log out"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
         >
           <IconLogout size={19} />
 
