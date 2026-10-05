@@ -4,7 +4,7 @@ import { createDownload } from "../services/downloadService";
 export default function DownloadBox() {
   const [url, setUrl] = useState("");
   const [fileType, setFileType] = useState("video");
-  const [quality, setQuality] = useState("720p");
+  const [quality, setQuality] = useState("720");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null); // { type: "success" | "error", text: "" }
 
@@ -71,10 +71,10 @@ export default function DownloadBox() {
             value={quality}
             onChange={(e) => setQuality(e.target.value)}
           >
-            <option value="1080p">1080p</option>
-            <option value="720p">720p</option>
-            <option value="480p">480p</option>
-            <option value="360p">360p</option>
+            <option value="1080">1080p</option>
+            <option value="720">720p</option>
+            <option value="480">480p</option>
+            <option value="360">360p</option>
           </select>
         )}
 
