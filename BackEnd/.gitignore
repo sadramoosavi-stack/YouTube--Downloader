@@ -18,3 +18,9 @@ Thumbs.db
 
 # env secrets
 .env
+
+.pyc
+
+.db
+
+.downloads
