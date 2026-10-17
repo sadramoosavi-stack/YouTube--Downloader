@@ -14,6 +14,6 @@ class Settings(BaseSettings):
     frontend_url: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(env_file=".env",env_file_encoding="utf-8",case_sensitive=False)
-
+    ytdlp_proxy: str | None = None
 
 settings = Settings()

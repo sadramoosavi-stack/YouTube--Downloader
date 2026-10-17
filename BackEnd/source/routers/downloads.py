@@ -15,6 +15,8 @@ from source.schemas import DownloadRequest, DownloadResponse, DownloadHistoryRes
 
 from source.routers.users import get_current_user
 
+from source.config import settings
+
 router = APIRouter(prefix="/downloads", tags=["Downloads"])
 
 DOWNLOAD_FOLDER = Path("downloads")
@@ -54,6 +56,9 @@ def create_download(data: DownloadRequest, current_user: User = Depends(get_curr
 
         else:
             ydl_options = {"format": "bestaudio/best", "outtmpl": str(download_folder / "%(title)s.%(ext)s"), "noplaylist": True, "restrictfilenames": True, "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "192"}]}
+
+        if settings.ytdlp_proxy:
+            ydl_options["proxy"] = settings.ytdlp_proxy
 
         with yt_dlp.YoutubeDL(ydl_options) as ydl:
             info = ydl.extract_info(data.youtube_url, download=True)
