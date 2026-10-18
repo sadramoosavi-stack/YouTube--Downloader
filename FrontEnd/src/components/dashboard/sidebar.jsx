@@ -38,7 +38,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <span>YT</span> Downloader
+        <span>Zorro</span> Downloader
       </div>
 
       <nav className="sidebar-nav">
