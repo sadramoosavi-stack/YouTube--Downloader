@@ -1,10 +1,16 @@
+
 from sqlalchemy import Column, create_engine, Integer, String, func, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship, Mapped, mapped_column
 from datetime import datetime
 
 from source.config import settings
 
-engine = create_engine(settings.database_url, connect_args={"check_same_thread": False})
+engine_options = {"pool_pre_ping": True}
+
+if settings.database_url.startswith("sqlite"):
+    engine_options["connect_args"] = {"check_same_thread": False}
+
+engine = create_engine(settings.database_url, **engine_options)
 
 session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -18,7 +24,7 @@ class User(base):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    created_at : Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     downloads = relationship("Download", back_populates="user", cascade="all, delete")
 
@@ -28,18 +34,13 @@ class Download(base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
     youtube_url = Column(String(500), nullable=False)
     video_title = Column(String(300), nullable=True)
-
     file_type = Column(String(20), nullable=False)
     quality = Column(String(30), nullable=True)
-
     download_status = Column(String(30), default="pending")
-
     file_name = Column(String(300), nullable=True)
-
-    created_at : Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     user = relationship("User", back_populates="downloads")
 
