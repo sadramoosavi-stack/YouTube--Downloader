@@ -1,5 +1,7 @@
 import shutil
 
+import logging
+
 from pathlib import Path
 
 import yt_dlp
@@ -20,6 +22,8 @@ from source.config import settings
 router = APIRouter(prefix="/downloads", tags=["Downloads"])
 
 DOWNLOAD_FOLDER = Path("downloads")
+
+logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=DownloadResponse)
@@ -55,7 +59,7 @@ def create_download(data: DownloadRequest, current_user: User = Depends(get_curr
             ydl_options = {"format": format_option, "outtmpl": str(download_folder / "%(title)s.%(ext)s"), "merge_output_format": "mp4", "noplaylist": True, "restrictfilenames": True}
 
         else:
-            ydl_options = {"format": "bestaudio/best", "outtmpl": str(download_folder / "%(title)s.%(ext)s"), "noplaylist": True, "restrictfilenames": True, "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "192"}]}
+            ydl_options = {"format": "bestaudio/best", "outtmpl": str(download_folder / "%(title)s.%(ext)s"), "noplaylist": True, "restrictfilenames": True, "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "192"}], "keepvideo": False, "verbose": True}
 
         if settings.ytdlp_proxy:
             ydl_options["proxy"] = settings.ytdlp_proxy
@@ -63,6 +67,10 @@ def create_download(data: DownloadRequest, current_user: User = Depends(get_curr
         with yt_dlp.YoutubeDL(ydl_options) as ydl:
             info = ydl.extract_info(data.youtube_url, download=True)
             video_title = info.get("title", "Unknown")
+            downloaded_file_path = Path(ydl.prepare_filename(info))
+
+        if data.file_type == "audio":
+            downloaded_file_path = downloaded_file_path.with_suffix(".mp3")
 
         downloaded_files = []
 
@@ -70,10 +78,13 @@ def create_download(data: DownloadRequest, current_user: User = Depends(get_curr
             if file.is_file():
                 downloaded_files.append(file)
 
-        if not downloaded_files:
-            raise Exception("Downloaded file was not found")
+        if data.file_type == "audio":
+            downloaded_files = [file for file in downloaded_files if file.suffix.lower() == ".mp3"]
 
-        downloaded_file = downloaded_files[0]
+        if not downloaded_files or not downloaded_file_path.is_file():
+            raise Exception(f"Downloaded output file was not found in {download_folder.resolve()}")
+
+        downloaded_file = downloaded_file_path if downloaded_file_path.is_file() else max(downloaded_files, key=lambda file: file.stat().st_mtime)
 
         new_download.video_title = video_title
         new_download.file_name = downloaded_file.name
@@ -90,6 +101,7 @@ def create_download(data: DownloadRequest, current_user: User = Depends(get_curr
         raise
 
     except Exception as e:
+        logger.exception("Download failed for download_id=%s", new_download.id)
         new_download.download_status = "failed"
         db.commit()
         raise HTTPException(status_code=500, detail=str(e))
